@@ -1,15 +1,82 @@
 <html>
-<head>
+<head>	
+	<title>MarcOS project Page</title>
 </head>
 <body>
 	<h1>MarcOS</h1>
-	<p> How to run MarcOS ? </p>
+	<h2>Objectives</h2>
+	<p>
+	The initial goal was to develop a basic operating system. But the project turned into developing
+	a very simple application that on depends on BIOS interrupt calls.</p>
+	<p>The application is a kind of basic and limited document editor.<br/>
+	You can manage up to 10 files. On file is restricted to a part of a floppy disk sector (1 sector equals 512 bytes). 
+	Each file affected to a determined sector.<br/>
+	The document size is smaller than 512 bytes by design, and actually less than that. It is actually limited to the input area 
+	on the screen : 40x12 characters.<br/>
+	
+	You can switch from one buffer to another using function from F1 to F10:
+	<ul>
+		<li>[F1]: 1st file/buffer</li>
+		<li>[F2]: 2nd file/buffer</li>
+		<li>[F3]: 3rd file/buffer</li>
+		<li>[F&lt;i&gt;]: &lt;i&gt;th file/buffer</li>
+		<li>...</li>
+		<li>[F10]: 10th file/buffer</li>
+	</ul>
+	Other function keys are:
+	<ul>
+		<li>[F11]: save the content of the current buffer (has seen on screen) to the corresponding sector on the floppy disk</li>
+		<li>[F12]: clear the buffer (on screen)</li>
+	</ul>   
+	</p>
+	
+	<h2> How to run MarcOS ? </h2>
 	<p> The solution was designed to be shipped on a floppy disk. The Personal Computer
 	had to boot on the floppy disk.
 	The binary file is an image of a floppy disk.</br>
-	You can execute the solution using an hypervisor: VMWare Player was tested.</br>
-	You have to remember that the solution expect to be hosted on a floppy disk. So the image has to be
-	associated to the virtual floppy drive.
+	You can execute the solution using an hypervisor: VMWare Player, VirtualBox... or in an emulator Qemu for example.</br>
+	You have to remember that the solution expects to be hosted on a floppy disk. So the image has to be
+	associated to the virtual floppy drive!
 	</p> 
+	<h2>Demonstration</h2>
+	<p>
+	<h3>First download the image of the floppy disk</h3>
+	<p> The image is available <a href="bin/MarcOS.img" >here</a>.
+	</p>
+	<h3>Create a new Virtual Machine... and play with it!</h3>
+
+	<p>When launching the Virtual Machine, the (virtual) BIOS boots on the virtual floppy disk drive.<br/>
+	A message is displayed on the screen. You are invited to press a key to launch the application.<br/>
+	The bootloader will actually load 4 sectors (4 x 512 bytes) from the floppy disk, starting from the second sector of
+	the first cylinder.
+	</p>
+	
+	<img src="images/MarcOS_BootLoader.PNG" alt="BootLoader Text"/>
+
+	<p>Here we are. The application is loaded. It only depends on the BIOS functions (no Linux kernel, nor MSDOS loaded). Screen, keyboard 
+	and floppy disk drive are driven by BIOS interrupt calls. For the display, it uses no interrupt call but the application writes chars
+	directly to VGA memory reserved address in the memory segment 0xb800 (The processor is running in Real Mode !) 
+	</p>
+	<img src="images/MarcOS_Accueil.PNG" alt="Application Home Page and Buffer#1"/>
+	
+	<p>Pressing the function key [F2] leads you to the second buffer.</p>
+	<img src="images/MarcOS_Buffer_2.PNG" alt="Buffer#2"/>
+	
+	<p>Pressing the function key [F3] leads you to the third buffer.</p>
+	<img src="images/MarcOS_Buffer_3.PNG"alt="Buffer#3"/>
+	
+	<p>Pressing the function key [F5] leads you to the fifth buffer.</p>
+	<img src="images/MarcOS_Buffer_5.PNG" alt="Buffer#5"/>
+	<p> You can
+	<ul>
+	<li>move the cursor into the blue rectangle</li>
+	<li>press a key. it displays the character on the screen (The character is in the buffer)</li>
+	
+	<li>press F11 key, you save the buffer on the floppy disk, in the current buffer</li>
+	</ul> 
+	Each buffered is statically mapped with a sector of the floppy disk.
+	</p>
+	<p> Well, now, the job is to rewrite the source code, and the build scripts.
+	</p>
 </body>
 </html>
